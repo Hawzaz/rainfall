@@ -1,0 +1,4 @@
+We first disas the program and see that it calls a p function, we will disas p
+and take a look at it
+it begins by flushing the buffer, then using the same vulnerable function as
+before
