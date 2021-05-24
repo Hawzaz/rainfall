@@ -2,18 +2,19 @@
 
 void	p(void)
 {
-	char buff[76];
+	char buff[64];
 	fflush(stdout);
 	gets(buff);
-	if ()
+	ret = return_address;
+	if (ret & 0xb0000000)
 	{
 		printf("0x804854a");
-		strdup(
+		exit(1);
 	}
 	else
 	{
-		printf();
-		exit(0);
+		puts(buff);
+		strdup(buff);
 	}
 }
 

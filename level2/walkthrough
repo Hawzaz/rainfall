@@ -1,4 +1,54 @@
 We first disas the program and see that it calls a p function, we will disas p
 and take a look at it
 it begins by flushing the buffer, then using the same vulnerable function as
-before
+before, we're going to do a buffer overflow.
+
+this one is a bit tricky as there is an if preventing us to exploit as usual
+
+0x080484fb <+39>:	and    eax,0xb0000000
+0x08048500 <+44>:	cmp    eax,0xb0000000
+0x08048505 <+49>:	jne    0x8048527 <p+83>
+
+We can see here that if we use and address begininng by 0xb, the program will
+exit suddenly after, therefore we must find another way
+
+lets start by finding the buffer size : 80 (thanks to a lot of A)
+after overflowing the buffer we want to call system(/bin/sh), we will look for
+the system() address : <p system> in gdb while running the prog will do the job
+
+After this we need to find the /bin/sh address, we will look for it with find
+because we cant use strings on the libc lib, to find it we need the address of
+the libc : 
+
+info proc mappings
+Start Addr   End Addr       Size     Offset objfile
+0xb7e2c000 0xb7fcf000   0x1a3000        0x0 /lib/i386-linux-gnu/libc-2.15.so
+
+find 0xb7e2c000,+9999999, "/bin/sh"
+
+perfect, found it : 0xb7f8cc58. As we know before sending diretcly our bin/sh
+the system function will await the return addr for when it ends, we'll fill it
+with NOPs.
+
+building our exploit we have : the padding + the system call + the NOPs + the sh
+call
+
+unfortunately, our system call begins with 0xb, so we need to change this part.
+
+we will make the override of eip to the ret of the main fucntion so it will
+bypass the if condition and keep our next instruction alive
+
+we finally have the padding + the ret addr + the system call + the NOPs + the sh
+call
+
+it doesnt work, while debugging we find out that the instructions blocking the
+program are the NOPs ?? weird !
+
+there is an issue in the jump things, lets insert a second time the ret address
+and give it a second try, if it jumps as we expect it will go right
+
+put this in a script and use the cat trick to make it work...
+
+(python exploit.py; cat)| ./level2
+
+WORKING !
