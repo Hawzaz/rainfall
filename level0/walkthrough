@@ -1,0 +1,12 @@
+We see that the program waits for an argument, but we don't know which one, so
+we go in gdb and tries to disassemble it 
+
+0x08048ed9 <+25>:	cmp    eax,0x1a7 
+
+this line deserves our attention, its the one causing a SIGSEGV without
+arguments. We see thath it compares eax to 0x1a7 (423)
+
+Lets try to give 423 as an argument to use in atoi, bingo !
+We now have a shell in level1 permissions :)
+
+Last thing we need to do is cat /home/user/level1/.pass, got the flag ! :)

@@ -1,0 +1,25 @@
+Going through this we initially dump through gdb the level1 binary, all we see
+is a non protected gets. After reading the man we can find :
+
+"The gets() function cannot be used securely. Because of its lack of bounds
+checking, and the inability for the calling program to reliably determine the
+length of the next incoming line, the use of this function enables malicious
+users to arbitrarily change a running program's functionality through a buffer
+overflow attack." We will now look into buffer overflow attack.
+
+understanding the buffer overflow attack, we will make an exploit sending a
+shellcode, we need to find the buffer size - so when does the gets crash ?
+
+By entering different lenghts, we see that the crash occurs at 76 char, not with
+a segfault but an illegal instruction message, we now need to find the EIP in
+order to put make it point to our shellcode so we can get through
+
+We can use gdb to find it, we will disassemble the binary and break just after
+the gets call, on the leave instruction - just after our input -. By typing info
+frame after our breakpoint, we get the EIP easily.
+
+We now need to exploit allof this, the idea is to fill the buffer with dumb
+stuff, reach the EIP, then we put a NOP in order to be sure that the exploit
+doesnt fail and that the system reach the NOP and finalyy our shellcode.
+
+We will do this in a python script and here we have, the magic shell !

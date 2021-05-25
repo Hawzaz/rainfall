@@ -1,0 +1,19 @@
+int main (int ac, char **av)
+{
+	int i;
+	char *str;
+	unsigned int a,b;
+
+	str = strdup(av[1]);
+	i = atoi(str);
+	a = getegid();
+	b = geteuid();
+	setresgid(0, a ,0);
+	setresuid(0, b, 0);
+	if (i == 423)
+		execv("/bin/sh");
+	else
+		printf("No !\n");
+	return 0;
+}
+
