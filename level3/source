@@ -1,0 +1,12 @@
+#include <stdio.h>
+
+void	v(void)
+{
+	FILE *fp;
+	char str[512];
+
+	fgets(str, 512, fp);
+	printf("%s\n", str);
+	if ( == 0x40)
+	
+}
