@@ -1,0 +1,31 @@
+This level is about format exploit
+
+It uses gets as before but the interesting part is in the printf exploit. We
+start by finding what to do. By using gdb and disassembling we find that there
+is a comparision with eax and 0x40 (64) so eax needs to be equal to 64.
+
+eax takes its value from a global variable m declared before but never used. we
+are going to change its value to 64 and then access the syscall hidden in the
+program
+
+how to do this ? lets see python -c "print 'A' * 4 + '%x%x%x%x'"
+
+it prints our A to the 4th offset
+
+ok now we need to put at the address of m 0x40
+
+printf has the %n flag used to store the numbers of char you print
+
+so if we %n = 64 to the m address, we're through !
+
+m address is 0x804988c
+
+lets build our exploit :
+
+(python -c "print '\x8c\x98\x04\x08' + 'A' * 41 + '%x%x%x%n'") | ./level3
+
+our length is 4 (m address) + 41 + 0x200 (3) + 8 + 8 which gives 64 !
+
+oh we cant go through the shell, i forgot the cat 
+
+(python -c "print '\x8c\x98\x04\x08' + 'A' * 41 + '%x%x%x%n'" ; cat -) | ./level3

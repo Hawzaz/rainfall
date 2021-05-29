@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+int m;
+
 void	v(void)
 {
 	FILE *fp;
@@ -7,6 +9,15 @@ void	v(void)
 
 	fgets(str, 512, fp);
 	printf("%s\n", str);
-	if ( == 0x40)
-	
+	if (m = 64)
+	{
+		fwrite(fp, "Wait what?!\n", 11);
+		syscall("\bin\sh");
+	}
+}
+
+int		main()
+{
+	v();
+	return (1);
 }
