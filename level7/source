@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+void	m(void)
+{
+	time();
+	printf("%s - %d\n", , c);
+}
+
+int		main(void)
+{
+	char s1,s2,s3;
+
+	s1 = malloc(8);
+	s2 = malloc(8);
+	s3 = malloc(8);
+}
