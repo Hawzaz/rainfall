@@ -27,10 +27,11 @@ int		main(void)
 	o = malloc(8);
 	o->i = 1;
 	o->s = malloc(8);
-	o = 2;
-	o.s3 = malloc(8);
-	strcpy(, );
-	strcpy(, );
+	p = malloc(8);
+	p->i = 2;
+	o->s = p->s = malloc(8);
+	strcpy(o->s, av[1]);
+	strcpy(p->s, av[2]);
 	fp = fopen("/home/user/level8/.pass", "r");
 	fgets(c, 68, fp);
 	puts("~~");
