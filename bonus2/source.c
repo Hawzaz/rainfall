@@ -1,8 +1,31 @@
+int language;
+
+int greetuser(char *str)
+{
+	char *s1;
+
+	if (language == 0)
+	{
+		strcpy(s1, "Hello ");
+	}
+	else if (language == 1)
+	{
+		strcpy(s1, "Hyvää päivää ");
+	}
+	else if (language == 2)
+	{
+		strcpy(s1, "Goedemiddag! ");
+	}
+	strcat(s1, str);
+	puts(s1);
+	return 0;
+}
+
 int main(int ac, char **av)
 {
 	char *dest;
 	char *s1;
-	int language;
+
 	if (ac == 3)
 	{
 		memset(dest, 0, 19);
@@ -15,7 +38,6 @@ int main(int ac, char **av)
 				language = 1;
 			else if (memcmp(s1, "nl", 2) == 0)
 				language = 2;
-
 		}
 		greetuser(dest);
 	}
