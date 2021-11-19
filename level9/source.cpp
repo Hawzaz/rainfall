@@ -1,38 +1,44 @@
-#include <unistd.h>
 #include <iostream>
 #include <cstring>
+class N {
+	public:
 
-int main (char **ac, char **av) {
-	
-	int var_bp_4h;
-	int var_4h;
-	int var_10h;
-	int var_14h;
-	int var_18h;
-	int var_1ch;
-	
-	if (av <= 1) {
-		_exit(1);
+	char 	*s1;
+	int		i;
+
+	N::N(int i)
+	{
+		this->i = i;
 	}
 
-	N *n5 = new N(5);
-	N *n6 = new N(6);
-	var_18h = ebx;
-	eax = var_1ch;
-	var_14h = var_1ch;
-	eax = var_18h;
-	var_10h = var_18h;
-	eax = envp;
-	eax += 4;
-	eax = *(eax);
-	eax = var_14h;
-	nn5.setAnnotation(argv[1]);
-	eax = var_10h;
-	eax = *(eax);
-	edx = *(eax);
-	eax = var_14h;
-	eax = var_10h;
-	void (*edx)(void, void) (eax, var_14h);
-	ebx = var_bp_4h;
-	return eax;
+	N N::operator+(N& n)
+	{
+		return (n.i + this->i);
+	}
+
+	N N::operator-(N& n)
+	{
+		return (n.i - this->i);
+	}
+
+	void setAnnotation(char *str) {
+		size_t n;
+
+		n = strlen(str);
+		memcpy(this->s1, str, n);
+	}
+
+};
+
+int main (char ac, char **av) 
+{
+	N *n1 = new N(5);
+	N *n2 = new N(6);
+
+	if (ac < 2) {
+		exit(1);
+	}
+	n1->setAnnotation(av[1]);
+	
+	return (n1 + n2);
 }
