@@ -15,7 +15,7 @@ int main(int ac, char **av)
 		str[atoi(av[1])] = 0;
 		fread(str2, 65, 1, file);
 		fclose(file);
-		if (strcmp(str, av[2] == 0))
+		if (strcmp(str, av[1] == 0))
 			execl("/bin/sh", "sh", 0);
 		else
 			puts(str + 66);

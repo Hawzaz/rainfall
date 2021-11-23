@@ -1,0 +1,25 @@
+By doing the source code and reading it we can see that the binary is using the first argument
+which will be multiplied by 4 to copy the second argument in the buffer. The first argument 
+shouldnt be greater than 10 but we need it to be = to 1464814662 (0x574f4c46) in order to use the execl
+
+We will use a buffer overflow in order to reach the good value.
+By testing the different value we can look at the max uint which is 4294967295 (0xffffffff)
+
+4294967295 / 4 = 1073741823
+
+Now if we put this in negative, and multiply it by 4 we can actually overflow and pass the condition (<10)
+
+But we must reach the 0x574f4c46 == condition
+
+46 4c 4f 57 = FLOW in ascii (funny hehe)
+
+if we manage to overflow by 4 the buffer of 40 character we can achieve it, so now we will look
+for what number * 4 = 44 with a big negative value
+
+We find that -1073741813 * 4 = 44
+
+So we need this and 44 charcacters but the 4 lasts must be FLOW
+
+./bonus1 -1073741813 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaFLOW
+
+Here we are :)

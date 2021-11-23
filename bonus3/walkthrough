@@ -1,0 +1,10 @@
+In this level we are looking for something very easy, if the file exists (and it does)
+and there is only 1 argument, and the str matches with the first arg we can acccess
+
+str[atoi(av[1])] = 0; If we give a blank str then str[0] = 0 and av[1] = 0
+
+Just give a blank str like 
+
+./bonus3 ""
+
+:)

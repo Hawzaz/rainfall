@@ -6,7 +6,7 @@ int main(char **av)
 	int n;
 
 	n = atoi(av[1]);
-	if (n < 9)
+	if (n < 10)
 	{
 		memcpy(buff, n*4, av[2]);
 		if (n == 1464814662)

