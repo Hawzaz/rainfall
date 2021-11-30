@@ -6,8 +6,11 @@ Through the 2 strcpy we're going to exploit the puts address to call the m funct
 
 In order to do this, we fust find the buffer size, the m address, the puts address in the GOT table and understand the behavior of the program.
 
+We will overwrite the puts address in the GOT table with the m address, with a buffer overflow changing the write address of the strcpy.
+
 We need 2 args, either way it segfaults, by looking and testing we find that the buffer size is 20.
-We fust fill the buffer with 20 randoms characters.
+
+We must fill the buffer with 20 randoms characters.
 
 Then, we look for the puts address :
 
